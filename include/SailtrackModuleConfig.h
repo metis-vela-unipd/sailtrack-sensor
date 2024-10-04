@@ -34,7 +34,7 @@
 /*
 To use RGB led define NOTIFICATION with this code:
     0x01234567
-        01 -> Anode [00] or Catode [01]
+        01 -> Anode [01] or Catode [00]
         23 -> Red led pin
         45 -> Green led pin
         67 -> blue led pin   
