@@ -22,19 +22,23 @@ class SailtrackModule {
     static unsigned int publishedMessagesCount;
     static unsigned int receivedMessagesCount;
 
-    #ifdef NOTIFICATION
-    static void beginNotificationLed();
-    #endif
     static void beginWifi(IPAddress ip);
     static void beginOTA();
     static void beginMqtt();
     static void mqttEventHandler(void * handlerArgs, esp_event_base_t base, int32_t eventId, void * eventData);
+    
     #ifdef NOTIFICATION
+    static bool isAnode;
+    static int red_pin;
+    static int green_pin;
+    static int blue_pin;
+    static void beginNotificationLed();
     static void notificationLedTask(void * pvArguments);
     static int mqttCheck();
     static void color(uint8_t red, uint8_t green, uint8_t blue);
     static void setColor(uint32_t colorCode);
     #endif
+    
     static void statusTask(void * pvArguments);
     static void logTask(void * pvArguments);
     static void otaTask(void * pvArguments);

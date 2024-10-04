@@ -12,6 +12,13 @@ bool SailtrackModule::mqttConnected;
 unsigned int SailtrackModule::publishedMessagesCount;
 unsigned int SailtrackModule::receivedMessagesCount;
 
+#ifdef NOTIFICATION
+bool SailtrackModule::isAnode;
+int SailtrackModule::red_pin;
+int SailtrackModule::green_pin;
+int SailtrackModule::blue_pin;
+#endif
+
 // -------------------------- Begin Methods -------------------------- //
 
 void SailtrackModule::begin(const char * name, IPAddress ip, SailtrackModuleCallbacks * callbacks) {
@@ -32,12 +39,23 @@ void SailtrackModule::begin(const char * name, IPAddress ip, SailtrackModuleCall
 
 #ifdef NOTIFICATION
 void SailtrackModule::beginNotificationLed() {
-    pinMode(RED_LED_PIN, OUTPUT);
-    pinMode(BLUE_LED_PIN, OUTPUT);
-    pinMode(GREEN_LED_PIN, OUTPUT);
-    digitalWrite(RED_LED_PIN, 255);
-    digitalWrite(BLUE_LED_PIN, 255);
-    digitalWrite(GREEN_LED_PIN, 255);
+    SailtrackModule::isAnode = static_cast<int>((uint8_t)(NOTIFICATION >> 24));
+    SailtrackModule::red_pin = static_cast<int>((uint8_t)(NOTIFICATION >> 16));
+    SailtrackModule::green_pin = static_cast<int>((uint8_t)(NOTIFICATION >> 8));
+    SailtrackModule::blue_pin = static_cast<int>((uint8_t)(NOTIFICATION));
+
+    pinMode(red_pin, OUTPUT);
+    pinMode(green_pin, OUTPUT);
+    pinMode(blue_pin, OUTPUT);
+    if(isAnode){
+        digitalWrite(red_pin, 0);
+        digitalWrite(green_pin, 0);
+        digitalWrite(blue_pin, 0);
+    }else{
+        digitalWrite(red_pin, 255);
+        digitalWrite(green_pin, 255);
+        digitalWrite(blue_pin, 255);
+    }
     log_printf("Led enable and ready");
     xTaskCreate(notificationLedTask, "notificationLedTask", STM_TASK_SMALL_STACK_SIZE, NULL, STM_TASK_LOW_PRIORITY, NULL);
 }
@@ -188,9 +206,15 @@ void SailtrackModule::setColor(uint32_t colorCode){
 }
 
 void SailtrackModule::color(uint8_t red, uint8_t green, uint8_t blue){
-    digitalWrite(RED_LED_PIN, 255-red);
-    digitalWrite(GREEN_LED_PIN, 255-green);
-    digitalWrite(BLUE_LED_PIN, 255-blue);
+    if(isAnode){
+        digitalWrite(red_pin, red);
+        digitalWrite(green_pin, green);
+        digitalWrite(blue_pin, blue);
+    }else{
+        digitalWrite(red_pin, 255-red);
+        digitalWrite(green_pin, 255-green);
+        digitalWrite(blue_pin, 255-blue);
+    }
 }
 
 #endif

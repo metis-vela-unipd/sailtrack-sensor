@@ -31,17 +31,14 @@
 
 
 #define BLINKING_TIME 1000
-#ifdef NOTIFICATION
-#ifndef RED_LED_PIN
-#error "RED_LED_PIN not defined" 
-#endif
-#ifndef BLUE_LED_PIN
-#error "BLUE_LED_PIN not defined" 
-#endif
-#ifndef GREEN_LED_PIN
-#error "GREEN_LED_PIN not defined" 
-#endif
-#endif
+/*
+To use RGB led define NOTIFICATION with this code:
+    0x01234567
+        01 -> Anode [00] or Catode [01]
+        23 -> Red led pin
+        45 -> Green led pin
+        67 -> blue led pin   
+*/
 
 // ----------------------- Tasks Configuration ----------------------- //
 
